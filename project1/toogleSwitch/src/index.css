@@ -1,0 +1,50 @@
+/* index.css */
+
+body {
+  font-family: Arial, sans-serif; /* Use a clean font for the body */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Center content vertically */
+  background-color: #f0f0f0; /* Light background color */
+}
+
+.toogle-switch {
+  cursor: pointer; /* Change cursor to pointer when hovering over the toggle */
+  width: 70px; /* Width of the toggle switch */
+  height: 40px; /* Height of the toggle switch */
+  background-color: #ccc; /* Default background color (OFF state) */
+  border-radius: 20px; /* Rounded corners for the switch */
+  position: relative; /* To position the bubble inside */
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.switch {
+  width: 36px; /* Width of the bubble */
+  height: 36px; /* Height of the bubble */
+  background-color: white; /* Bubble color */
+  border-radius: 50%; /* Make it circular */
+  position: absolute; /* Position it absolutely within the switch */
+  top: 2px; /* Position it near the top */
+  left: 2px; /* Position it near the left */
+  transition: transform 0.3s; /* Smooth transition for bubble movement */
+  display: flex; /* Enable flex to center the text */
+  justify-content: center; /* Center text horizontally */
+  align-items: center; /* Center text vertically */
+  font-weight: bold; /* Make the text bold */
+}
+
+.switch.on {
+  transform: translateX(30px); /* Move the bubble to the right when ON */
+}
+
+.switch.on .toogle-state {
+  color: rgb(0, 0, 0); /* Text color when ON */
+  
+}
+
+.toogle-state {
+  position: absolute; /* Position text absolutely within the bubble */
+  color: black; /* Text color when OFF */
+  transition: color 0.3s; /* Smooth transition for text color */
+}
