@@ -1,60 +1,71 @@
-// src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
-import { db, auth } from "../firebase"; // Adjust path as necessary
-import { collection, onSnapshot, addDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import {
+  collection,
+  onSnapshot,
+  addDoc,
+  serverTimestamp,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import MessageInput from "../components/MessageInput";
+import ChatMessage from "../components/ChatMessage";
+import TypingIndicator from "../components/TypingIndicator";
+import "../index.css";
 
 const Dashboard = () => {
   const [messages, setMessages] = useState([]);
-  const [messageText, setMessageText] = useState("");
+  const [typing, setTyping] = useState(false);
 
   useEffect(() => {
-    // Listen for messages in Firestore
-    const unsubscribe = onSnapshot(collection(db, "messages"), (snapshot) => {
-      const messagesArray = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      // Sort messages by timestamp
-      setMessages(messagesArray.sort((a, b) => a.timestamp - b.timestamp));
+    const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      setMessages(data);
     });
 
-    return () => unsubscribe(); // Cleanup listener on unmount
+    return () => unsubscribe();
   }, []);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (messageText.trim() === "") return; // Prevent empty messages
+  const handleSendMessage = async (messageContent, clearInput) => {
+    if (!messageContent.trim()) return;
 
-    // Add message to Firestore
-    await addDoc(collection(db, "messages"), {
-      text: messageText,
-      user: auth.currentUser.email, // Assuming you use email for user identification
-      timestamp: new Date(),
-    });
+    try {
+      await addDoc(collection(db, "messages"), {
+        text: messageContent, // Message content
+        user: auth.currentUser.email, // Authenticated user's email
+        timestamp: serverTimestamp(),
+      });
 
-    setMessageText(""); // Clear input field after sending
+      clearInput();
+    } catch (error) {
+      console.error("Error sending message: ", error);
+    }
+  };
+
+  const handleTyping = () => {
+    setTyping(true);
+    setTimeout(() => setTyping(false), 2000); // Keep typing for 2 seconds
   };
 
   return (
-    <div>
-      <h2>Chat Room</h2>
-      <div>
-        {messages.map((msg) => (
-          <div key={msg.id}>
-            <strong>{msg.user}:</strong> {msg.text}
-          </div>
-        ))}
+    <div className="chat-container">
+      <div className="chat-header">
+        Group Chat
+        <button onClick={() => auth.signOut()} className="logout-button">
+          Logout
+        </button>
       </div>
-      <form onSubmit={handleSendMessage}>
-        <input
-          type="text"
-          value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
-          placeholder="Type a message"
-          required
-        />
-        <button type="submit">Send</button>
-      </form>
+
+      <div className="chat-content">
+        {typing && <TypingIndicator />}
+        <div className="chat-box">
+          {messages.map((msg) => (
+            <ChatMessage key={msg.id} message={msg} />
+          ))}
+        </div>
+      </div>
+      <MessageInput onSend={handleSendMessage} onTyping={handleTyping} />
     </div>
   );
 };

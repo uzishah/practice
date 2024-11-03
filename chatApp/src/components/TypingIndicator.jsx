@@ -1,4 +1,3 @@
-// src/components/TypingIndicator.jsx
 import React from "react";
 
 const TypingIndicator = () => {

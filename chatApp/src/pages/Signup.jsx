@@ -1,10 +1,9 @@
-// src/pages/Signup.jsx
 import { useState } from "react";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Loader from "../components/Loader";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles.css";
+import "./Signup.css";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +20,7 @@ const Signup = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       setLoading(false);
-      navigate("/login"); // Redirect to login page
+      navigate("/login");
     } catch (error) {
       setLoading(false);
       setError("Failed to create an account. " + error.message);
@@ -29,13 +28,14 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-      <h2 className="signup-title">Sign Up</h2>
+    <div className="login-container">
+      <h2 className="login-title">Sign Up</h2>
       {error && <p className="error-message">{error}</p>}
       {loading && <Loader />}
-      <form className="signup-form" onSubmit={signup}>
+      <form className="login-form" onSubmit={signup}>
         <input
           type="email"
+          className="form-input"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -43,12 +43,15 @@ const Signup = () => {
         />
         <input
           type="password"
+          className="form-input"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Sign Up</button>
+        <button className="submit-button" type="submit">
+          Sign Up
+        </button>
       </form>
       <p>
         Already have an account? <Link to="/login">Login here</Link>

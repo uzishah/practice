@@ -1,5 +1,3 @@
-// src/components/ChatMessage.jsx
-import React from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { auth } from "../firebase";
 

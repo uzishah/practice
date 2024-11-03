@@ -1,18 +1,25 @@
 // src/App.jsx
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import PrivateRoute from "./components/PrivateRoute";
-import "./styles.css";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-const App = () => {
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import PrivateRoute from "./components/PrivateRoute";
+import Signup from "./pages/Signup";
+
+function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/signup" />} />
+
         <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+
         <Route
           path="/dashboard"
           element={
@@ -24,6 +31,6 @@ const App = () => {
       </Routes>
     </Router>
   );
-};
+}
 
 export default App;
